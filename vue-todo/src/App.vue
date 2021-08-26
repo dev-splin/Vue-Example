@@ -1,10 +1,10 @@
 <template>
-    <div id="app">
-      <todo-header></todo-header>
-      <todo-input></todo-input>
-      <todo-list></todo-list>
-      <todo-footer></todo-footer>
-    </div>
+  <div id="app">
+    <todo-header></todo-header>
+    <todo-input v-on:addTodo="addTodo"></todo-input>
+    <todo-list v-bind:propsdata="todoItems" v-on:removeTodo="removeTodo"></todo-list>
+    <todo-footer v-on:clearTodo="clearTodo"></todo-footer>
+  </div>
 </template>
 
 <script>
@@ -19,10 +19,50 @@ export default {
     'TodoInput' : TodoInputVue,
     'TodoList' : TodoListVue,
     'TodoFooter' : TodoFooterVue
-  }
+  },
+  created() {
+    if(localStorage.length > 0) {
+      for(let i = 0 ; i < localStorage.length; ++i) {
+        this.todoItems.push(localStorage.key(i));
+      }
+    }
+  },
+  data() {
+    return {
+      todoItems: []
+    }
+  },
+  methods: {
+    addTodo(todoItem) {
+      localStorage.setItem(todoItem, todoItem);
+      this.todoItems.push(todoItem);
+    },
+    clearTodo() {
+      localStorage.clear();
+      this.todoItems = [];
+    },
+    removeTodo(todoItem, index) {
+      localStorage.removeItem(todoItem);
+      this.todoItems.splice(index, 1);
+    }
+  },
 }
 
 </script>
 
 <style>
+  body {
+    text-align: center;
+    background-color: #f6f6f8;
+  }
+  input {
+    border-style: groove;
+    width: 200px;
+  }
+  button {
+    border-style: groove;
+  }
+  .shadow {
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
+  }
 </style>
